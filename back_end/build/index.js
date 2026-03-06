@@ -1,8 +1,11 @@
-import express from 'express';
-import mongoose from 'mongoose';
-// import pg from 'pg';
+import express from "express";
+import dotenv from "dotenv";
+import { pool, initializeSchema } from '../db/schema.js';
+import { Pool } from "pg";
+import mongoose from "mongoose";
+dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 3000;
+initializeSchema();
 //Middleware
 app.use(express.json()); // JSON bodies
 app.use(express.urlencoded({ extended: true })); // URL-encoded bodies
@@ -15,10 +18,10 @@ app.all('/:id', (req, res) => {
         headers: req.headers,
         body: req.body
     };
-    console.log(data);
 });
 //Error Handler
 //Start Server
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Running on port ${PORT}`);
 });
