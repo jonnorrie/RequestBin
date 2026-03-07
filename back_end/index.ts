@@ -31,7 +31,7 @@ app.get('/api/web', (req, res) => {
 app.get('/api/web/baskets', async (req, res) => {
   const { masterToken } = req.body;
 
-  if (!masterToken) return res.status(204) // early exit if no token exists
+  if (!masterToken) return res.status(204).send() // early exit if no token exists
 
   // retrieving all rows in baskets table matching the mastertoken id
   try {
@@ -43,8 +43,7 @@ app.get('/api/web/baskets', async (req, res) => {
       WHERE mt.token = $1`,
       [masterToken]
     );
-    res.status(200)
-    res.send(result.rows) // array being returned
+    res.status(200).json(result.rows) // array being returned
   } catch (err) {
     res.status(500).send('Error retrieving baskets.')
 }})
@@ -53,7 +52,7 @@ app.post("/api/web/:id", async (req, res) => {
   let { masterToken } = req.body;
 
   if (!masterToken) {
-    generateMasterToken()
+     generateMasterToken()
     .then(newMasterTokenRow => masterToken = newMasterTokenRow.token)
   }
 
