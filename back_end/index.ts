@@ -60,10 +60,10 @@ app.post("/api/web/:id", async (req, res) => {
   let masterTokenId;
 
   try {
-    let res = await pool.query(
+    let result = await pool.query(
       `SELECT id FROM master_tokens WHERE token = $1`, [masterToken]
     )
-    masterTokenId = res.rows[0].id;
+    masterTokenId = result.rows[0].id;
   } catch (err) {
     res.status(500).send(`Error retrieving master token ID`)
   }
@@ -76,6 +76,7 @@ app.post("/api/web/:id", async (req, res) => {
         `SELECT * FROM BASKETS WHERE endpoint = $1`, [newEndPoint]
       )
       if (!res.rows.length) { break }
+      newEndPoint = generateEndpoint();
     }
     await pool.query(
       `INSERT INTO baskets (endpoint, config_response, master_token_id)
