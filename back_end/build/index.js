@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
-import { pool, initializeSchema } from './db/schema.js';
-import mongoose from "mongoose";
+import { pool, initializeSchema } from './db/psql_schema.js';
+import { mongoExecutor } from './db/mongo_schema.js';
 dotenv.config();
 const app = express();
 initializeSchema();
@@ -20,6 +20,15 @@ app.all('/:id', (req, res) => {
 });
 //Error Handler
 //Start Server
+const exampleMongo = new mongoExecutor({
+    requestPayload: {
+        example: 1,
+        secondExample: 2,
+        stringExample: "hello"
+    }
+});
+await exampleMongo.save()
+    .then(_ => mongoExecutor.find({}).then(x => console.log(x[0].toJSON())));
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Running on port ${PORT}`);
