@@ -6,18 +6,19 @@
   display: flex;
   gap: 1.5rem;
   padding: 1.5rem;
+  align-items: flex-start;
 }
 
 .new-basket-panel {
   flex: 2;
-  background-color: #f0f4ff;
+  background-color: #d0dbff;
   padding: 1.5rem;
   border-radius: 8px;
 }
 
 .my-baskets-panel {
   flex: 1;
-  background-color: #f5f0ff;
+  background-color: #ddd0ff;
   padding: 1.5rem;
   border-radius: 8px;
 }
