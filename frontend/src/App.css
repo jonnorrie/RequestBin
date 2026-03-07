@@ -2,6 +2,26 @@
   text-align: center;
 }
 
+.component-container {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1.5rem;
+}
+
+.new-basket-panel {
+  flex: 2;
+  background-color: #f0f4ff;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.my-baskets-panel {
+  flex: 1;
+  background-color: #f5f0ff;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
