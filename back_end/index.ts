@@ -1,7 +1,9 @@
 import express from "express";
 import dotenv from "dotenv";
 import { pool, initializeSchema, generateMasterToken } from './db/psql_schema.js'
-// import { mongoExecutor } from './db/mongo_schema.js';
+import { mongoExecutor } from './db/mongo_schema.js';
+import mongoose from "mongoose";
+const { ObjectId } = mongoose.Types;
 dotenv.config();
 
 const app = express();
@@ -86,16 +88,44 @@ app.post("/api/web/:id", async (req, res) => {
   }
 })
 
+app.get("/api/web/:id", async (req, res) => {
+  const basketId = req.params.id;
 
-//Routes
-// app.all('/:id', (req, res) => {
-//   const data = {
-//     method: req.method,
-//     path: req.path,
-//     headers: req.headers,
-//     body: req.body
-//   }
-// })
+  try {
+    const result = await pool.query(
+      `SELECT * FROM requests WHERE basket_id = $1`, 
+      [basketId]
+    );
+
+    // Fetch MongoDB data for each row
+    await Promise.all(result.rows.map(async (rowObj) => {
+      if (rowObj.mongoId) { // make sure mongoId exists
+        const objectId = new ObjectId(rowObj.mongoId);
+        const mongoResult = await mongoExecutor.findOne({ _id: objectId }).lean();
+        rowObj.mongoRequestBody = mongoResult;
+      } 
+    }));
+
+    // Return combined result
+    res.status(200).json(result.rows);
+
+  } catch (err) {
+    console.error("Failed to interface with DB:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+app.all('/:id', (req, res) => {
+  const data = {
+    method: req.method,
+    path: req.path,
+    headers: req.headers,
+    body: req.body
+  }
+  //const newBody = new mongoExecutor({requestPayload: data})
+  //newBody.save()
+})
 
 //Error Handler
 
