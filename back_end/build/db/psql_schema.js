@@ -9,7 +9,7 @@ const statements = [
     `CREATE EXTENSION IF NOT EXISTS pgcrypto;`,
     `CREATE TABLE IF NOT EXISTS master_tokens (
       id SERIAL PRIMARY KEY,
-      tokens UUID DEFAULT gen_random_uuid() UNIQUE NOT NULL
+      token UUID DEFAULT gen_random_uuid() UNIQUE NOT NULL
   );`,
     `CREATE TABLE IF NOT EXISTS baskets (
       id SERIAL PRIMARY KEY,

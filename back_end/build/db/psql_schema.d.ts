@@ -3,7 +3,7 @@ export declare const pool: Pool;
 export declare function initializeSchema(): Promise<void>;
 interface master_token_object {
     id: number;
-    master_token: string;
+    token: string;
 }
 export declare function generateMasterToken(): Promise<master_token_object>;
 export {};
