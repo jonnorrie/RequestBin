@@ -1,20 +1,26 @@
 import React from 'react'
+import basketService from '../services/basketService'
 
 const NewBasket = () => {
 
   function handleCreateBasket(event: any) {
     event.preventDefault()
     let url = event.target.previousElementSibling.childNodes[0]
-    console.log(url)
     let inputValue = event.target.previousElementSibling.children[0].value
-    console.log(`${url}`)
+    let payload = {
+      body: "test data"
+    }
+
+    if (inputValue){
+      basketService.create(payload)
+    }
   }
 
   return (
     <div>
       <h1>New Basket</h1>
-      <p>Create a new basket to send HTTP requests to</p>
-      <p>http://requestbasket.com/<input></input></p>
+      <p>Create a new basket to send HTTP requests to.</p>
+      <p>http://localhost:300/<input></input></p>
       <button onClick={handleCreateBasket}>Create</button>
     </div>
   )
