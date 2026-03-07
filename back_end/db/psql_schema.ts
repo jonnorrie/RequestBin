@@ -1,7 +1,3 @@
-// why did we do this?
-// import pkg from 'pg';
-// const { Pool } = pkg;
-// and now
 import { Pool } from 'pg';
 
 import dotenv from 'dotenv';
@@ -33,7 +29,7 @@ const statements = [
     headers JSONB NOT NULL,
     request_date DATE NOT NULL,
     request_time TIME NOT NULL,
-    mondodb_id VARCHAR(255) UNIQUE NOT NULL
+    mongodb_id VARCHAR(255) UNIQUE NOT NULL
   );`
 ];
 
