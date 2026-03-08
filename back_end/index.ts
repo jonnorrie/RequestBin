@@ -135,16 +135,45 @@ app.get("/api/web/:id", async (req, res) => {
   }
 });
 
-app.all('/:id', (req, res) => {
-  const data = {
-    method: req.method,
-    path: req.path,
-    headers: req.headers,
-    body: req.body
+app.all('/:id', async (req, res) => {
+  const endpoint = req.params.id;
+
+  //find the corresponding basket
+  let basketId;
+  try {
+    const basketResult = await pool.query(
+      `SELECT id FROM baskets WHERE endpoint = $1`, [endpoint]
+    );
+    // evac if not found
+    if (!basketResult.rows.length) return res.status(404).send('Basket not found');
+    basketId = basketResult.rows[0].id;
+  } catch (err) {
+    return res.status(500).send('Error finding basket');
   }
-  //const newBody = new mongoExecutor({requestPayload: data})
-  //newBody.save()
-})
+
+  //save the body to mongodb
+  let mongoId;
+  try {
+    const mongoDoc = await mongoExecutor.create({ requestPayload: req.body });
+    mongoId = mongoDoc._id.toString();
+  } catch (err) {
+    return res.status(500).send('Error saving to Mongo database');
+  }
+
+  //save metadata to postgres
+  // PG will alegedly cast the date and times to the correct columns with the duplicate NOW() calls. Not tested yet. 
+  try {
+    await pool.query(
+      `INSERT INTO requests (basket_id, method, headers, request_date, request_time, mongodb_id)
+       VALUES ($1, $2, $3, NOW(), NOW(), $4)`,
+       [basketId, req.method, req.headers, mongoId]
+    );
+  } catch (err) {
+    return res.status(500).send('Error sending metadata to PGdb')
+  }
+
+  res.status(200).send(`Request captured.`)
+});
 
 //Error Handler
 
