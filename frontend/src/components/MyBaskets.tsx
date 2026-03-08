@@ -5,7 +5,13 @@ const MyBaskets = (props:any) => {
     <div>
       <h2>My Baskets</h2>
       {props.baskets.map((basket: any) => {
-        return <p>{basket}</p>
+        return (
+          <p key={String(basket)}>
+            <button type="button" onClick={() => props.onBasketClick(basket)}>
+              {basket}
+            </button>
+          </p>
+        )
       })}
     </div>
   )

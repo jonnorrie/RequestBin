@@ -20,7 +20,7 @@ const NewBasket = () => {
     <div>
       <h1>New Basket</h1>
       <p>Create a new basket to send HTTP requests to.</p>
-      <p>http://localhost:300/<input></input></p>
+      <p>http://localhost:3000/<input></input></p>
       <button onClick={handleCreateBasket}>Create</button>
     </div>
   )
