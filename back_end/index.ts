@@ -122,7 +122,8 @@ app.get("/api/web/:id", async (req, res) => {
         const mongoResult = await mongoExecutor.findOne({ _id: objectId }).lean();
         // not writing to psql, in memory enrichment (attaching a temp property)
         rowObj.mongoRequestBody = mongoResult;
-      } 
+      }
+      return rowObj;
     }));
 
     // Return combined result including temp property

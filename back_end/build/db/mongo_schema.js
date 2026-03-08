@@ -7,6 +7,7 @@ const requestBodySchema = new mongoose.Schema({
         required: true
     }
 });
+// strips MongoDB internals (_id, __v) and renames _id to id before the document is sent to the client
 requestBodySchema.set("toJSON", {
     transform: (_, returnedObj) => {
         const obj = returnedObj; // temporary
