@@ -54,7 +54,7 @@ app.get('/api/web/baskets', async (req, res) => {
 }})
 
 app.post("/api/web/:id", async (req, res) => {
-  let { masterToken } = req.body;
+  let masterToken = req.headers['master-token'];
 
   // if new user, then generate a master token and set that string to masterToken 
   if (!masterToken) {
