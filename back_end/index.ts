@@ -115,9 +115,9 @@ app.get("/api/web/:id", async (req, res) => {
     //result is an object, with a rows property (array) containing objects (individual rows)
     // Fetch MongoDB data for each row
     await Promise.all(result.rows.map(async (rowObj) => {
-      // potential mismatch with column name here
-      if (rowObj.mongoId) { // make sure mongoId exists
-        const objectId = new ObjectId(rowObj.mongoId);
+      // potential mismatch with column name here // solved, please check. Will need to rebuild tables.
+      if (rowObj.mongodb_id) { // make sure mongodb_id exists
+        const objectId = new ObjectId(rowObj.mongodb_id);
         // .lean() returns plain js obj instead of mongoose doc containing extra methods
         const mongoResult = await mongoExecutor.findOne({ _id: objectId }).lean();
         // not writing to psql, in memory enrichment (attaching a temp property)
