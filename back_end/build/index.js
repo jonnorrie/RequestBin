@@ -127,10 +127,9 @@ app.get("/api/web/:endpoint", async (req, res) => {
         if (!result.rows.length) {
             return res.status(404).send();
         }
-        const requestRows = result.rows.filter((rowObj) => rowObj.id !== null);
         //result is an object, with a rows property (array) containing objects (individual rows)
         // Fetch MongoDB data for each row
-        await Promise.all(requestRows.map(async (rowObj) => {
+        await Promise.all(result.rows.map(async (rowObj) => {
             if (rowObj.mongodb_id) { // make sure mongodb_id exists; can be null for bodyless requests
                 // .lean() returns plain js obj instead of mongoose doc containing extra methods
                 const mongoResult = await mongoExecutor.findById(rowObj.mongodb_id).lean();
@@ -140,7 +139,7 @@ app.get("/api/web/:endpoint", async (req, res) => {
             return rowObj;
         }));
         // Return combined result including temp property
-        res.status(200).json(requestRows);
+        res.status(200).json(result.rows);
     }
     catch (err) {
         console.error("Failed to interface with DB:", err);
