@@ -52,7 +52,9 @@ function App() {
     try {
       const response = await basketService.getRequests(endpoint)
       const rows = Array.isArray(response.data) ? response.data : []
-      const normalizedRequests = rows.map((row: any) => normalizeRequestRow(row, endpoint))
+      const normalizedRequests = rows
+        .filter((row: any) => row?.id != null)
+        .map((row: any) => normalizeRequestRow(row, endpoint))
       setSelectedBasketRequests(normalizedRequests)
     } catch (err) {
       console.error('Error fetching basket requests', err)
