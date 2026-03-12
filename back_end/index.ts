@@ -50,7 +50,7 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("frontend disconnected");
   })
-})
+});
 
 
 //routes
@@ -73,7 +73,7 @@ app.get('/api/web/baskets', async (req, res) => {
     res.status(200).json(result.rows) // array being returned in the json body
   } catch (err) {
     res.status(500).send('Error retrieving baskets.')
-}})
+}});
 
 app.get('/api/web', async (req, res) => {
   let newEndPoint = generateEndpoint();
@@ -99,7 +99,7 @@ app.get('/api/web', async (req, res) => {
   } catch (err) {
     return res.status(500).send('Failed to generate unique endpoint');
   }
-})
+});
 
 app.post("/api/web/:endpoint", async (req, res) => {
   let masterToken = req.headers['master-token'];
@@ -134,7 +134,7 @@ app.post("/api/web/:endpoint", async (req, res) => {
   } catch (err) {
     res.status(500).send(`Error creating new basket`);
   }
-})
+});
 
 app.get("/api/web/:endpoint", async (req, res) => {
   const endpoint = req.params.endpoint;
@@ -201,7 +201,7 @@ app.delete("/api/web/:endpoint", async (req, res) => {
     console.error('Error deleting basket:', err);
     return res.status(500).send('Error deleting basket');
   }
-})
+});
 
 // route to delete specific requests. 
 app.delete("/api/web/requests/:id", async (req, res) => {
@@ -222,7 +222,23 @@ app.delete("/api/web/requests/:id", async (req, res) => {
     return res.status(500).send(`problem deleting request`);
   }
 
-})
+});
+
+app.put("/api/web/:endpoint", async (req, res) => {
+  const endpoint = req.params.endpoint;
+  const newConfig = req.body;
+  try {
+    await pool.query(
+      `UPDATE baskets
+      SET config_response = $1
+      WHERE endpoint = $2;`, [newConfig, endpoint]
+    );
+    return res.status(200).send();
+  } catch (err) {
+    console.log("update query failed", err);
+    return res.status(500).send("problem updating basket")
+  }
+});
 
 app.all('/:endpoint', async (req, res) => {
   const endpoint = req.params.endpoint;
