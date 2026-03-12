@@ -254,8 +254,6 @@ app.all('/:endpoint', async (req, res) => {
       return res.status(500).send('Error saving to Mongo database');
     }
   }
-
-
   //save metadata to postgres
   // PG will alegedly cast the date and times to the correct columns with the duplicate NOW() calls. Not tested yet. 
   try {
@@ -273,6 +271,11 @@ app.all('/:endpoint', async (req, res) => {
     }
 
     io.emit("newRequest", { requestMetadata: result.rows[0], endpoint, body: req.body })
+
+    //I suppose this is where we'd add custom responses if the basket has a non empty config_response field
+    //something like:
+    //const method = basket.config_response.method and so on for other details
+    //or capture them from the req object itself and then so on.
 
     res.status(200).send(`Request captured and emmited via socket.`)
   } catch (err) {
