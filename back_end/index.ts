@@ -302,9 +302,9 @@ app.all('/:endpoint', async (req, res) => {
 });
 
 // Matches any path that does NOT contain a dot (.), so actual files like .js/.css/images are served by express.static
-app.get(/^\/(?!.*\..*).*$/, (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'));
-});
+//app.get(/^\/(?!.*\..*).*$/, (req, res) => {
+//  res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'));
+//});
 
 //Error Handler
 
