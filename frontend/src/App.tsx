@@ -8,6 +8,8 @@ import basketService from './services/basketService'
 const backendBaseUrl = window.location.origin
 
 function App() {
+
+  console.log(backendBaseUrl)
   
   const [userToken, setUserToken] = useState<string | null>(null)
   const [baskets, setUserBaskets] = useState<string[]>([])
