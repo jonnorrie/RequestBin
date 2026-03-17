@@ -4,6 +4,7 @@ import { pool, initializeSchema, generateMasterToken } from './db/psql_schema.js
 import { mongoExecutor } from './db/mongo_schema.js';
 import mongoose from "mongoose";
 import cors from "cors";
+// needed to serve front end from the backend
 import path from "path";
 import { fileURLToPath } from 'url';
 //for websockets
@@ -17,8 +18,10 @@ const app = express();
 initializeSchema();
 //getting express to read the static files
 const __filename = fileURLToPath(import.meta.url);
+// strips the filename off the end giving you the directory
 const __dirname = path.dirname(__filename);
-app.use(express.static(path.join(__dirname, '..', 'dist')));
+// instructing express to serve any files in backend/dist as static assets
+//app.use(express.static(path.join(__dirname, '..', 'dist')));
 const generateEndpoint = () => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     const len = chars.length;
@@ -68,13 +71,14 @@ app.get('/api/web/baskets', async (req, res) => {
 });
 app.get('/api/web', async (req, res) => {
     let newEndPoint = generateEndpoint();
+    // attempts to guard against clashing
     let attempts = 0;
     const MAX_ATTEMPTS = 5;
     // check for duplicated endpoint
     try {
         while (attempts < MAX_ATTEMPTS) {
             let result = await pool.query(`SELECT * FROM BASKETS WHERE endpoint = $1`, [newEndPoint]);
-            // evaluate if psql returned a row and breaks out if so
+            // evaluate if psql returned a row and breaks out of loop if so
             if (!result.rows.length) {
                 break;
             }
@@ -92,6 +96,7 @@ app.get('/api/web', async (req, res) => {
         return res.status(500).send('Failed to generate unique endpoint');
     }
 });
+// creating a new basket
 app.post("/api/web/:endpoint", async (req, res) => {
     let masterToken = req.headers['master-token'];
     const newEndPoint = req.params.endpoint;
@@ -105,6 +110,7 @@ app.post("/api/web/:endpoint", async (req, res) => {
             masterTokenId = newMasterTokenRow.id;
         }
         else {
+            // existing user
             const result = await pool.query(`SELECT id FROM master_tokens WHERE token = $1`, [masterToken]);
             masterTokenId = result.rows[0].id;
         }
@@ -122,6 +128,7 @@ app.post("/api/web/:endpoint", async (req, res) => {
         res.status(500).send(`Error creating new basket`);
     }
 });
+// retrieving all requests for an endpoint
 app.get("/api/web/:endpoint", async (req, res) => {
     const endpoint = req.params.endpoint;
     try {
@@ -133,7 +140,7 @@ app.get("/api/web/:endpoint", async (req, res) => {
         if (!result.rows.length) {
             return res.status(404).send();
         }
-        //result is an object, with a rows property (array) containing objects (individual rows)
+        //result is an object (pool always returns an object), with a rows property (array) containing objects (individual rows)
         // Fetch MongoDB data for each row
         await Promise.all(result.rows.map(async (rowObj) => {
             if (rowObj.mongodb_id) { // make sure mongodb_id exists; can be null for bodyless requests
@@ -193,6 +200,8 @@ app.delete("/api/web/requests/:id", async (req, res) => {
         return res.status(500).send(`problem deleting request`);
     }
 });
+// put to edit the config response object
+// not wired up yet
 app.put("/api/web/:endpoint", async (req, res) => {
     const endpoint = req.params.endpoint;
     const newConfig = req.body;
@@ -222,6 +231,7 @@ app.all('/:endpoint', async (req, res) => {
     }
     //save metadata to postgres
     // PG will alegedly cast the date and times to the correct columns with the duplicate NOW() calls. Not tested yet. 
+    // tested, works!
     try {
         const result = await pool.query(`INSERT INTO requests (basket_id, method, headers, request_date, request_time, mongodb_id)
       SELECT b.id, $1, $2, NOW(), NOW(), $3
