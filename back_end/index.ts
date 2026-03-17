@@ -25,7 +25,7 @@ const __filename = fileURLToPath(import.meta.url);
 // strips the filename off the end giving you the directory
 const __dirname = path.dirname(__filename);
 // instructing express to serve any files in backend/dist as static assets
-app.use(express.static(path.join(__dirname, '..', 'dist')));
+//app.use(express.static(path.join(__dirname, '..', 'dist')));
 
 const generateEndpoint = () => {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
