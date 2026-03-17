@@ -20,7 +20,7 @@ const NewBasket = ({ userToken, endpoint, setEndpoint, onBasketCreated }: any) =
       <h1>New Basket</h1>
       <p>Create a new basket to send HTTP requests to.</p>
       <p className="input-row">
-        http://localhost:3000/
+        http://18.209.228.34:3000/
         <input
           aria-label="new-basket-path"
           value={endpoint || ''}

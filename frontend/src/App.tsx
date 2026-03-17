@@ -5,9 +5,9 @@ import MyBaskets from './components/MyBaskets'
 import RequestsForBasket from './components/RequestsForBasket'
 import basketService from './services/basketService'
 
-function App() {
+const backendBaseUrl = window.location.origin
 
-  const backendBaseUrl = 'http://localhost:3000'
+function App() {
   
   const [userToken, setUserToken] = useState<string | null>(null)
   const [baskets, setUserBaskets] = useState<string[]>([])
