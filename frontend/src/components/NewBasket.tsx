@@ -1,7 +1,7 @@
 import React from 'react'
 import basketService from '../services/basketService'
 
-const backendBaseUrl = `http://18.209.228.34:3000/`
+const backendBaseUrl = `${window.location.protocol}//${window.location.hostname}:3000`
 
 const NewBasket = ({ userToken, endpoint, setEndpoint, onBasketCreated }: any) => {
 
