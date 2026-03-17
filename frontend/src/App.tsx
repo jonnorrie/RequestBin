@@ -5,11 +5,9 @@ import MyBaskets from './components/MyBaskets'
 import RequestsForBasket from './components/RequestsForBasket'
 import basketService from './services/basketService'
 
-const backendBaseUrl = window.location.origin
+const backendBaseUrl = `${window.location.protocol}//${window.location.hostname}:3000`
 
 function App() {
-
-  console.log(backendBaseUrl)
   
   const [userToken, setUserToken] = useState<string | null>(null)
   const [baskets, setUserBaskets] = useState<string[]>([])
@@ -74,7 +72,7 @@ function App() {
       })
       .then((rows: any[]) => {
         if (Array.isArray(rows)) {
-          const mapped = rows.map((row: any) => `http://localhost:3000/${row.endpoint}`);
+          const mapped = rows.map((row: any) => `${backendBaseUrl}/${row.endpoint}`);
           setUserBaskets(mapped);
         }
       })

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { io } from 'socket.io-client'
 import basketService from '../services/basketService'
 
-const backendBaseUrl = 'http://localhost:3000'
+const backendBaseUrl = `${window.location.protocol}//${window.location.hostname}:3000`
 
 function getEndpointFromBasketValue(basket: string) {
   try {
