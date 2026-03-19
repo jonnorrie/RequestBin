@@ -24,6 +24,8 @@
     "typescript-eslint": "^8.56.1"
   },
   "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.967.0",
+    "@aws-sdk/client-ssm": "^3.967.0",
     "@types/pg": "^8.18.0",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",

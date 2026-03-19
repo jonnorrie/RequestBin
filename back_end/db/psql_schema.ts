@@ -1,13 +1,44 @@
 import { Pool } from 'pg';
+import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
+import { SSMClient, GetParameterCommand } from '@aws-sdk/client-ssm';
 
-import dotenv from 'dotenv';
-dotenv.config();
+const region = 'us-east-1';
+const secretsClient = new SecretsManagerClient({ region });
+const ssmClient = new SSMClient({ region });
 
-// Create a connection pool; this should automatically read from .env
-export const pool = new Pool();
+async function getSecret(secretName: string): Promise<Record<string, string>> {
+  const response = await secretsClient.send(
+    new GetSecretValueCommand({ SecretId: secretName })
+  );
+  return JSON.parse(response.SecretString as string);
+}
 
-// Define your schema
-// make sure pgcrypto exists for uuid
+async function getParameter(name: string): Promise<string> {
+  const response = await ssmClient.send(
+    new GetParameterCommand({ Name: name })
+  );
+  return response.Parameter?.Value as string;
+}
+
+async function createPool(): Promise<Pool> {
+  const [secret, host, port, database] = await Promise.all([
+    getSecret('requestbin/postgres'),
+    getParameter('/requestbin/postgres/host'),
+    getParameter('/requestbin/postgres/port'),
+    getParameter('/requestbin/postgres/dbname'),
+  ]);
+
+  return new Pool({
+    host,
+    port: parseInt(port),
+    database,
+    user: secret.username,
+    password: secret.password,
+    ssl: { rejectUnauthorized: false },
+  });
+}
+
+export const pool = await createPool();
 
 const statements = [
   `CREATE EXTENSION IF NOT EXISTS pgcrypto;`,

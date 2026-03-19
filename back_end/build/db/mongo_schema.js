@@ -1,5 +1,23 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
-const mongourl = process.env.MONGODB_URI; //this will definitely exist in .env
+import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
+import { SSMClient, GetParameterCommand } from '@aws-sdk/client-ssm';
+const region = 'us-east-1';
+const secretsClient = new SecretsManagerClient({ region });
+const ssmClient = new SSMClient({ region });
+async function getSecret(secretName) {
+    const response = await secretsClient.send(new GetSecretValueCommand({ SecretId: secretName }));
+    return JSON.parse(response.SecretString);
+}
+async function getParameter(name) {
+    const response = await ssmClient.send(new GetParameterCommand({ Name: name }));
+    return response.Parameter?.Value;
+}
+const [secret, host, port] = await Promise.all([
+    getSecret('requestbin/documentdb'),
+    getParameter('/requestbin/docdb/host'),
+    getParameter('/requestbin/docdb/port'),
+]);
+const mongourl = `mongodb://${secret.username}:${encodeURIComponent(secret.password)}@${host}:${port}/?tls=true&tlsCAFile=/home/ssm-user/RequestBin/back_end/global-bundle.pem&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false&authMechanism=SCRAM-SHA-1`;
 await mongoose.connect(mongourl);
 const requestBodySchema = new mongoose.Schema({
     requestPayload: {
