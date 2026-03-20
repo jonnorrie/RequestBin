@@ -30,7 +30,7 @@ const __dirname = path.dirname(__filename);
 const generateEndpoint = () => {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   const len = chars.length;
-  let output = "/bin/";
+  let output = "";
   for (let i = 0; i < 7; i++) {
     let char = chars[Math.floor(Math.random() * len)];
     output += char
