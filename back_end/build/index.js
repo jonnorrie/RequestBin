@@ -25,7 +25,7 @@ const __dirname = path.dirname(__filename);
 const generateEndpoint = () => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     const len = chars.length;
-    let output = "";
+    let output = "/bin/";
     for (let i = 0; i < 7; i++) {
         let char = chars[Math.floor(Math.random() * len)];
         output += char;
@@ -222,7 +222,7 @@ app.put("/api/web/:endpoint", async (req, res) => {
         return res.status(500).send("problem updating basket");
     }
 });
-app.all('/:endpoint', async (req, res) => {
+app.all('/bins/:endpoint', async (req, res) => {
     const endpoint = req.params.endpoint;
     //save the body to mongodb if there is a body;
     let mongoId;

@@ -5,10 +5,10 @@ function getEndpointFromBasketValue(basket: string) {
   try {
     const parsed = new URL(basket)
     const lastSegment = parsed.pathname.split('/').filter(Boolean).pop()
-    return lastSegment || basket
+    return `/bin/${lastSegment}` || basket
   } catch (err) {
     const lastSegment = basket.split('/').filter(Boolean).pop()
-    return lastSegment || basket
+    return `/bin/${lastSegment}` || basket
   }
 }
 
