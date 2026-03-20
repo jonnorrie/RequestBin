@@ -8,19 +8,19 @@ const generateEndpoint = () => {
 
 const create = (endpoint, masterToken) => {
   const headers = masterToken ? { 'master-token': masterToken } : {}
-  return axios.post(`${baseURL}/${endpoint}`, {}, { headers })
+  return axios.post(`${baseURL}/bin/${endpoint}`, {}, { headers })
 }
 
 const getRequests = (endpoint) => {
-  return axios.get(`${baseURL}/${endpoint}`)
+  return axios.get(`${baseURL}/bin/${endpoint}`)
 }
 
 const deleteBasket = (endpoint) => {
-  return axios.delete(`${baseURL}/${endpoint}`)
+  return axios.delete(`${baseURL}/bin/${endpoint}`)
 }
 
 const deleteRequest = (requestId) => {
-  return axios.delete(`${baseURL}/requests/${requestId}`)
+  return axios.delete(`${baseURL}/bin/requests/${requestId}`)
 }
 
 export default {
